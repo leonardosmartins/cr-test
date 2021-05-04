@@ -1,0 +1,39 @@
+apiVersion: api.luizalabs-kong/v1alpha1
+kind: KongAPI
+metadata:
+  name: httpbinapis6
+spec:
+  targetRef:
+    apiVersion: v1
+    kind: Deployment
+    name: dbless-kong
+    namespace: kong
+  config: |
+    _format_version: '1.1'
+    services:
+      - name: httpbinapis6
+        url: 'http://httpbin.org/json'
+        plugins: []
+        routes:
+          - tags:
+              - OAS3_import
+              - OAS3file_openapi.yaml
+              - MyTag
+            name: json
+            methods:
+              - GET
+            paths:
+              - /json/$
+            strip_path: false
+        tags:
+          - OAS3_import
+          - OAS3file_openapi.yaml
+          - MyTag
+    upstreams:
+      - name: HttpBin_API
+        targets:
+          - target: 'httpbin.org:80'
+        tags:
+          - OAS3_import
+          - OAS3file_openapi.yaml
+          - MyTag
