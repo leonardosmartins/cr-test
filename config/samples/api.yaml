@@ -1,0 +1,37 @@
+apiVersion: api.luizalabs-kong/v1alpha1
+kind: KongAPI
+metadata:
+  name: players-api
+spec:
+  gatewayId: order-management
+  forwardTo:
+    serviceName: players
+    port: 9999
+    namespace: bets
+  config: |
+    _format_version: '1.1'
+    services:
+      - name: players-api
+        url: 'http://httpbin.org'
+        plugins: []
+        routes:
+          - tags:
+              - OAS3_import
+              - OAS3file_openapi.yaml
+              - MyTag
+            name: json
+            methods:
+              - GET
+            paths:
+              - /api/players/(?<id>\S+)$
+            strip_path: false
+        tags:
+          - OAS3_import
+          - OAS3file_openapi.yaml
+          - MyTag
+status:
+  targetRef:
+    apiVersion: v1
+    kind: Deployment
+    name: kong-1618498032-kong
+    namespace: kong

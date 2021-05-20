@@ -1,0 +1,25 @@
+apiVersion: api.luizalabs-kong/v1alpha1
+kind: KongAPI
+metadata:
+  name: kongapi-matches
+spec:
+  targetRef:
+    apiVersion: v1
+    kind: Deployment
+    name: kong-1617646442-kong
+  config: |
+    services:
+      - name: matches-api-v1
+        url: "http://matches.bets.svc.cluster.local:9999"
+        retries: 12
+        tags:
+        - matches-apps
+        routes:
+          - name: pets
+            paths:
+              - /matches
+            methods:
+              - POST
+              - GET
+        plugins:
+          - name: prometheus

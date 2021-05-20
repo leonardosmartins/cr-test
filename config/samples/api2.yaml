@@ -1,0 +1,43 @@
+apiVersion: api.luizalabs-kong/v1alpha1
+kind: KongAPI
+metadata:
+  name: httpbinapis2
+spec:
+  targetRef:
+    apiVersion: v1
+    kind: Deployment
+    name: kong-1618498032-kong
+    namespace: kong
+  forwardTo:
+    serviceName: players
+    port: 9999
+    namespace: bets
+  config: |
+    _format_version: '1.1'
+    services:
+      - name: httpbinapis2
+        url: 'http://httpbin.org/json'
+        plugins: []
+        routes:
+          - tags:
+              - OAS3_import
+              - OAS3file_openapi.yaml
+              - MyTag
+            name: json
+            methods:
+              - GET
+            paths:
+              - /json/$
+            strip_path: false
+        tags:
+          - OAS3_import
+          - OAS3file_openapi.yaml
+          - MyTag
+    upstreams:
+      - name: HttpBin_API
+        targets:
+          - target: 'httpbin.org:80'
+        tags:
+          - OAS3_import
+          - OAS3file_openapi.yaml
+          - MyTag

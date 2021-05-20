@@ -1,0 +1,24 @@
+apiVersion: api.luizalabs-kong/v1alpha1
+kind: KongAPI
+metadata:
+  name: httpbin-json
+spec:
+  targetRef:
+    apiVersion: v1
+    kind: Deployment
+    name: kong-1617718572-kong
+    namespace: kong
+  config: |
+    services:
+      - name: json-api-v2
+        url: "http://httpbin.org/json"
+        retries: 3
+        tags:
+        - json-apps
+        routes:
+          - name: json
+            paths:
+              - /
+            methods:
+              - GET
+            strip_path: false
